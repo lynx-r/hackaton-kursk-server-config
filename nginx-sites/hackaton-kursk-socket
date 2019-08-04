@@ -1,0 +1,40 @@
+server {
+
+        server_name socket.shashki.online 194.87.236.120;
+	
+	error_log /var/log/nginx/hackaton-kursk-socket.error debug;
+	access_log /var/log/nginx/hackaton-kursk-socket.access;
+
+        location / {
+		proxy_pass http://127.0.0.1:1234/;
+
+		# WebSocket support
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+        }
+
+
+
+    listen [::]:443 ssl; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/socket.shashki.online/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/socket.shashki.online/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = socket.shashki.online) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+        listen 80;
+        listen [::]:80;
+
+        server_name socket.shashki.online 194.87.236.120;
+    return 404; # managed by Certbot
+
+
+}
